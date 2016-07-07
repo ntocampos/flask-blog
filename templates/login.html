@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Flask Blog - Login</title>
+    </head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for m in messages %}
+            <p style='color: red;'>{{ m }}</p>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% if not session['username'] %}
+        <form class="" action="/login" method="post">
+            <label>Username: </label>
+            <input type="text" name="username" placeholder="Username">
+
+            <label>Password: </label>
+            <input type="password" name="password" placeholder="Password">
+
+            <input type="submit" name="name" value="Log in">
+        </form>
+        {% else %}
+        <p style="color: red;">You are already logged in!</p>
+        <p><a href="/logout">Cick here</a> to log out.</p>
+        {% endif %}
+
+        {% if session['username'] %}
+        <p>
+            Username: <strong>{{ session['username'] }}</strong>
+        </p>
+        {% endif %}
+    </body>
+</html>
