@@ -14,7 +14,7 @@ def login_required(f):
         if session.get('session_id'):
             user_id = session.get('user_id')
             session_id = session.get('session_id')
-            _session = Session.query.filter_by(user_id = user_id, session_id = session_id)
+            _session = Session.query.filter_by(user_id = user_id, key = session_id)
 
             if _session:
                 return f(*args, **kwargs)
@@ -60,10 +60,13 @@ def login():
         return render_template('login.html')
 
 @app.route('/logout')
+@login_required
 def logout():
-    if 'session_id' in session:
-        # User is logged in
-        session.clear()
-        return redirect('')
-    else:
-        return redirect(url_for('login'))
+    session.clear()
+    return redirect('')
+
+@app.route('/post/new', methods = ['GET', 'POST'])
+@login_required
+def new_post():
+    if request.method == 'GET':
+        return render_template('new_post.html')
