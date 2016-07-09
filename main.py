@@ -1,10 +1,12 @@
 from flask import Flask
+import os
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://moises:mypassword@localhost/blog'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+app.secret_key = 'f97a5a8134e5df4ad0707be5f4bcb7e308e77debb097d9bd'
+# os.urandom(24).encode('hex')
 
 from views import *
 

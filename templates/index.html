@@ -6,8 +6,8 @@
     </head>
     <body>
         <h1>Homepage</h1>
-        {% if session['username'] %}
-        <p>Your username appears to be: <strong>{{ session.get('username') }}</strong></p>
+        {% if g.current_user %}
+        <p>Your username appears to be: <strong>{{ g.current_user.username }}</strong></p>
         <p>Session ID: <strong>{{session.get('session_id') }}</strong></p>
         <a href="/logout">Log out</a>
         {% else %}

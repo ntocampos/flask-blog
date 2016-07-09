@@ -13,7 +13,7 @@
         {% endif %}
         {% endwith %}
 
-        {% if not session['username'] %}
+        {% if not session.get('is_authenticated') %}
         <form class="" action="/login" method="post">
             <label>Username: </label>
             <input type="text" name="username" placeholder="Username">
@@ -28,9 +28,9 @@
         <p><a href="/logout">Cick here</a> to log out.</p>
         {% endif %}
 
-        {% if session['username'] %}
+        {% if session.get('is_authenticated') %}
         <p>
-            Username: <strong>{{ session['username'] }}</strong>
+            Username: <strong>{{ g.current_user.username }}</strong>
         </p>
         {% endif %}
     </body>

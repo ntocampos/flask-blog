@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session, flash
+from flask import render_template, request, redirect, url_for, session, flash, g
 from main import app
 from models import db, User, Session
 from hashlib import sha1
@@ -23,7 +23,11 @@ def login_required(f):
 
     return decorated_function
 
-
+@app.before_request
+def before():
+    if session.get('is_authenticated'):
+        _s = Session.query.filter_by(key = session.get('session_id')).first()
+        g.current_user = _s.user
 
 # Views
 
@@ -48,9 +52,8 @@ def login():
             db.session.add(s)
             db.session.commit()
 
-            session['user_id'] = _user.id
-            session['username'] = username
             session['session_id'] = session_id
+            session['is_authenticated'] = True
 
             return redirect('')
         else:
