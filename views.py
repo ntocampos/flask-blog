@@ -6,12 +6,16 @@ from datetime import datetime
 from time import mktime
 from functools import wraps
 
-# Wrappers
+### Wrappers ###
 
+# This decorator will prevent that users don't access certain pages that need
+# authentication
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get('session_id'):
+            # If the session is active, verify if the session key exists in the db
+            # to prevent fake session keys
             user_id = session.get('user_id')
             session_id = session.get('session_id')
             _session = Session.query.filter_by(user_id = user_id, key = session_id)
@@ -23,6 +27,8 @@ def login_required(f):
 
     return decorated_function
 
+# Puts the session id corresponding user object in the g variable, to be accessible
+# through the entire request
 @app.before_request
 def before():
     if session.get('is_authenticated', False):
@@ -30,13 +36,16 @@ def before():
         _s = Session.query.filter_by(key = session.get('session_id')).first()
         g.current_user = _s.user
 
-# Views
+### Views ###
+# Above each view, a comment about what the page does
 
+# Lists all the posts
 @app.route('/')
 def index():
     _posts = Post.query.order_by('created_at DESC').all()
     return render_template('index.html', posts = _posts)
 
+# GET: displays the login form; POST: authenticate
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -64,12 +73,14 @@ def login():
     else:
         return render_template('login.html')
 
+# Clear the session values
 @app.route('/logout')
 @login_required
 def logout():
     session.clear()
-    return redirect('')
+    return redirect(url_for('index'))
 
+# GET: displays the new post form; POST: creates a new post
 @app.route('/post', methods = ['GET', 'POST'])
 @app.route('/post/new', methods = ['GET', 'POST'])
 @login_required
@@ -90,12 +101,14 @@ def new_post():
     else:
         return render_template('new_post.html')
 
+# View a specific post
 @app.route('/post/<int:id>')
 def view_post(id):
     _post = Post.query.get(id)
     if _post:
         return render_template('post.html', post = _post)
 
+# GET: display the form pre filled to edit a post; POST: edit the post
 @app.route('/post/<int:id>/edit', methods = ['GET', 'POST'])
 @login_required
 def edit_post(id):
@@ -111,12 +124,12 @@ def edit_post(id):
 
         return redirect(url_for('view_post', id = id))
     else:
-        print 'Is ownwe? ' + str(g.current_user == _post.user)
         if g.current_user == _post.user:
             return render_template('new_post.html', post = _post)
         else:
             return redirect(url_for('view_post', id = id))
 
+# Delete a specific post if the requestor is the owner
 @app.route('/post/<int:id>/delete')
 @login_required
 def delete_post(id):
