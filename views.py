@@ -27,7 +27,7 @@ def login_required(f):
 
     return decorated_function
 
-# Puts the session id corresponding user object in the g variable, to be accessible
+# Puts the session_id corresponding user object in the g variable, to be accessible
 # through the entire request
 @app.before_request
 def before():
@@ -113,21 +113,21 @@ def view_post(id):
 @login_required
 def edit_post(id):
     _post = Post.query.get(id)
-    if request.method == 'POST':
-        new_title = request.form['title']
-        new_body = request.form['body']
+    if g.current_user == _post.user:
+        if request.method == 'POST':
+            new_title = request.form['title']
+            new_body = request.form['body']
 
-        if new_title and new_body:
-            _post.title = new_title
-            _post.body = new_body
-            db.session.commit()
+            if new_title and new_body:
+                _post.title = new_title
+                _post.body = new_body
+                db.session.commit()
 
-        return redirect(url_for('view_post', id = id))
-    else:
-        if g.current_user == _post.user:
-            return render_template('new_post.html', post = _post)
+            return redirect(url_for('view_post', id = id))            
         else:
-            return redirect(url_for('view_post', id = id))
+            return render_template('new_post.html', post = _post)
+    else:
+        return redirect(url_for('view_post', id = id))
 
 # Delete a specific post if the requestor is the owner
 @app.route('/post/<int:id>/delete')
