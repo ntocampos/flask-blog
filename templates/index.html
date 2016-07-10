@@ -6,12 +6,28 @@
     </head>
     <body>
         <h1>Homepage</h1>
-        {% if g.current_user %}
-        <p>Your username appears to be: <strong>{{ g.current_user.username }}</strong></p>
-        <p>Session ID: <strong>{{session.get('session_id') }}</strong></p>
-        <a href="/logout">Log out</a>
-        {% else %}
-        <a href="/login">Log in</a>
-        {% endif %}
+        <div>
+            {% if g.current_user %}
+            <p>
+                Your username appears to be: <strong>{{ g.current_user.username }}</strong>
+                <a href="/logout">Log out</a>
+            </p>
+            <p>Session ID: <strong>{{ session.get('session_id') }}</strong></p>
+            {% else %}
+            <a href="/login">Log in</a>
+            {% endif %}
+        </div>
+        <div>
+            {% for post in posts %}
+            <h3>
+                <a href="/post/{{ post.id }}">{{ post.title }}</a>
+            </h3>
+            <p>{{ (post.body[:100] + '...') if post.body[100:] else post.body }}</p>
+            <small>
+                posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
+                by {{ post.user.username }}
+            </small>
+            {% endfor %}
+        </div>
     </body>
 </html>

@@ -1,7 +1,28 @@
-<h1>Helow molieres</h1>
-
-<!-- New post
-Edit post
-Delete post
-List posts
-Sacar quando usar o objeto g (session) -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Flask Blog - Create new post</title>
+    </head>
+    <body>
+        <div>
+            {% if not post: %}
+            <h1>Create new post</h1>
+            <form method="post">
+                <input type="text" name="title" placeholder="Title">
+                <br />
+                <textarea name="body" rows="8" cols="40"></textarea>
+                <input type="submit" name="name" value="Post">
+            </form>
+            {% else %}
+            <h1>Edit post</h1>
+            <form method="post">
+                <input type="text" name="title" placeholder="Title" value="{{ post.title }}">
+                <br />
+                <textarea name="body" rows="8" cols="40">{{ post.body }}</textarea>
+                <input type="submit" name="name" value="Edit">
+            </form>
+            {% endif %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Flask Blog - {{ post.title }}</title>
+    </head>
+    <body>
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.body }}</p>
+        <small>
+            posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
+            by {{ post.user.username }}
+        </small>
+        {% if g.current_user == post.user %}
+        <a href="/post/{{post.id}}/edit">Edit</a> |
+        <a href="/post/{{ post.id }}/delete">Delete</a>
+        {% endif %}
+    </body>
+</html>
