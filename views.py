@@ -5,6 +5,7 @@ from hashlib import sha1
 from datetime import datetime
 from time import mktime
 from functools import wraps
+import re
 
 ### Wrappers ###
 
@@ -36,6 +37,29 @@ def before():
         _s = Session.query.filter_by(key = session.get('session_id')).first()
         g.current_user = _s.user
 
+
+### Auxiliar functions ###
+
+def authenticate(username, password):
+    _user = User.query.filter_by(username = username).first()
+
+    if _user and _user.password == password:
+        hash_key = username + app.secret_key + str(int(mktime(datetime.now().timetuple())))
+        session_id = sha1(hash_key.encode()).hexdigest()
+
+        s = Session(session_id)
+        _user.sessions.append(s)
+        db.session.add(s)
+        db.session.commit()
+
+        session['session_id'] = session_id
+        session['is_authenticated'] = True
+
+        return True
+    else:
+        return False
+
+
 ### Views ###
 # Above each view, a comment about what the page does
 
@@ -45,27 +69,18 @@ def index():
     _posts = Post.query.order_by('created_at DESC').all()
     return render_template('index.html', posts = _posts)
 
+
 # GET: displays the login form; POST: authenticate
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
+    # Temporary workaround
+    session.clear()
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        _user = User.query.filter_by(username = username).first()
-
-        if _user and _user.password == password:
-            hash_key = username + app.secret_key + str(int(mktime(datetime.now().timetuple())))
-            session_id = sha1(hash_key.encode()).hexdigest()
-
-            s = Session(session_id)
-            _user.sessions.append(s)
-            db.session.add(s)
-            db.session.commit()
-
-            session['session_id'] = session_id
-            session['is_authenticated'] = True
-
+        if authenticate(username, password):
             return redirect('')
         else:
             flash("Wrong username or password.")
@@ -107,6 +122,8 @@ def view_post(id):
     _post = Post.query.get(id)
     if _post:
         return render_template('post.html', post = _post)
+    else:
+        return '404'
 
 # GET: display the form pre filled to edit a post; POST: edit the post
 @app.route('/post/<int:id>/edit', methods = ['GET', 'POST'])
@@ -123,7 +140,7 @@ def edit_post(id):
                 _post.body = new_body
                 db.session.commit()
 
-            return redirect(url_for('view_post', id = id))            
+            return redirect(url_for('view_post', id = id))
         else:
             return render_template('new_post.html', post = _post)
     else:
@@ -139,3 +156,38 @@ def delete_post(id):
         db.session.commit()
 
     return redirect(url_for('index'))
+
+# GET: displays the register form; POST: creates a new user in the db
+@app.route('/register', methods = ['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+
+        valid = True
+
+        prog = re.compile(r'([a-z A-Z 0-9 . _ + -])+\@([a-z A-Z 0-9 - .])+\.([a-z])+')
+        if not prog.match(email):
+            valid = False
+            print 'email error'
+
+        if len(username) < 4:
+            valid = False
+            print 'username error'
+
+        if len(password) < 4:
+            valid = False
+            print 'password error'
+
+        if valid:
+            _user = User(email, username, password)
+            db.session.add(_user)
+            db.session.commit()
+            authenticate(username, password)
+
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('register'))
+    else:
+        return render_template('register.html')
