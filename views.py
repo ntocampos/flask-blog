@@ -40,7 +40,7 @@ def before():
 
 ### Auxiliar functions ###
 
-def authenticate(username, password):
+def authenticate(username, password, remember):
     _user = User.query.filter_by(username = username).first()
 
     if _user and _user.password == password:
@@ -54,6 +54,7 @@ def authenticate(username, password):
 
         session['session_id'] = session_id
         session['is_authenticated'] = True
+        session.permanent = remember
 
         return True
     else:
@@ -73,14 +74,18 @@ def index():
 # GET: displays the login form; POST: authenticate
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
-    # Temporary workaround
-    session.clear()
+    if session.get('is_authenticated'):
+        return redirect(url_for('index'))
 
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        if request.form.get('remember_me'):
+            remember_me = True
+        else:
+            remember_me = False
 
-        if authenticate(username, password):
+        if authenticate(username, password, remember_me):
             return redirect('')
         else:
             flash("Wrong username or password.")
