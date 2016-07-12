@@ -13,13 +13,6 @@
     <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
 </head>
 <body>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <p style='color: red;'>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     <div class="flex-container">
         <div class="flex-subcontainer">
             <div class="container">
@@ -41,12 +34,23 @@
                             <input class="form-control" type="password" name="password" placeholder="Password">
                         </div>
                     </div>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Error: </strong> {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
                     <div class="col-sm-6 checkbox">
                         <label for="remember_me">
                             <input type="checkbox" id="remember_me" name="remember_me"> Remember me?
                         </label>
                     </div>
                     <input class="btn btn-primary btn-lg col-sm-6" type="submit" name="name" value="Log in">
+
                 </form>
             </div>
         </div>
