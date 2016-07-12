@@ -1,27 +1,60 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Flask Blog - Register</title>
-    </head>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Blog - Register</title>
+
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/register.css') }}" rel="stylesheet">
+</head>
+<body>
     <body>
-        <div>
-            <h1>Register</h1>
-            <form method="post">
-                <label>Email:</label>
-                <input type="text" name="email" placeholder="email@example.com">
-                <br />
-                <label>Username:</label>
-                <input type="text" name="username" value="" placeholder="Username">
-                <br />
-                <label>Password:</label>
-                <input type="password" name="password" value="" placeholder="More than 4 characters long">
-                <br />
-                <label>Confirm password:</label>
-                <input type="password" name="confirm_password" value="">
-                <br />
-                <input type="submit" name="name" value="Register">
-            </form>
+        <div class="flex-container">
+            <div class="flex-subcontainer">
+                <div class="container">
+                    <h1 class="text-center">Sign Up</h1>
+                    <br />
+                    <form class="form-horizontal" method="post">
+                        <div class="form-group">
+                            <label for="email" class="col-sm-3 control-label">Email</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="email" placeholder="email@example.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username" class="col-sm-3 control-label">Username</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="username" placeholder="Username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-3 control-label">Password</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" name="password" placeholder="More than 4 characters long">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password" class="col-sm-3 control-label">Confirm password</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" name="confirm_password" placeholder="Type the exact password typed above">
+                            </div>
+                        </div>
+                        <br />
+                        <input type="submit" class="btn btn-primary btn-lg col-sm-offset-7 col-sm-4" name="submit" value="Register">
+                    </form>
+                </div>
+            </div>
         </div>
     </body>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
 </html>

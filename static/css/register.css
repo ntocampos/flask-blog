@@ -1,0 +1,41 @@
+html, body {
+    height: 100%;
+}
+
+/* Color Pallete
+Dark blue: #354458
+Light blue: #3A9AD9
+Green: #29ABA4
+Bege: #E9E0D6
+Red: #EB7260*/
+
+body {
+    background: #3A9AD9;
+    color: #354458;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+}
+
+.flex-subcontainer {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.container {
+    max-width: 768px;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background-color: #3A9AD9;
+}
