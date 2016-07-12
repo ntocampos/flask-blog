@@ -1,38 +1,60 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Flask Blog - Login</title>
-    </head>
-    <body>
-        {% with messages = get_flashed_messages() %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Blog - Register</title>
+
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
         {% if messages %}
-            {% for m in messages %}
-            <p style='color: red;'>{{ m }}</p>
+            {% for message in messages %}
+            <p style='color: red;'>{{ message }}</p>
             {% endfor %}
         {% endif %}
-        {% endwith %}
+    {% endwith %}
+    <div class="flex-container">
+        <div class="flex-subcontainer">
+            <div class="container">
+                <h1 class="text-center">Sign In</h1> <br />
+                <form method="post">
+                    <div class="form-group form-group-lg">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-user"></span>
+                            </div>
+                            <input class="form-control" type="text" name="username" placeholder="Username">
+                        </div>
+                    </div>
+                    <div class="form-group form-group-lg">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-lock"></span>
+                            </div>
+                            <input class="form-control" type="password" name="password" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="col-sm-6 checkbox">
+                        <label for="remember_me">
+                            <input type="checkbox" id="remember_me" name="remember_me"> Remember me?
+                        </label>
+                    </div>
+                    <input class="btn btn-primary btn-lg col-sm-6" type="submit" name="name" value="Log in">
+                </form>
+            </div>
+        </div>
+    </div>
 
-        {% if not session.get('is_authenticated') %}
-        <form class="" action="/login" method="post">
-            <label>Username: </label>
-            <input type="text" name="username" placeholder="Username">
-
-            <label>Password: </label>
-            <input type="password" name="password" placeholder="Password">
-            <input type="checkbox" id="remember_me" name="remember_me">
-            <label for="remember_me">Remember me?</label>
-            <input type="submit" name="name" value="Log in">
-        </form>
-        {% else %}
-        <p style="color: red;">You are already logged in!</p>
-        <p><a href="/logout">Cick here</a> to log out.</p>
-        {% endif %}
-
-        {% if session.get('is_authenticated') %}
-        <p>
-            Username: <strong>{{ g.current_user.username }}</strong>
-        </p>
-        {% endif %}
-    </body>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
 </html>
