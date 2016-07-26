@@ -1,0 +1,68 @@
+html, body {
+    height: 100%;
+}
+
+/* Color Pallete
+Dark blue: #354458
+Light blue: #3A9AD9
+Green: #29ABA4
+Bege: #E9E0D6
+Red: #EB7260*/
+
+body {
+    background: #354458;
+    color: #354458;
+}
+
+.post {
+    background-color: white;
+    padding: 20px 50px 50px 50px;
+    margin: 15px 0 25px 0;
+}
+
+h1 > a {
+    color: inherit;
+}
+
+.btn-primary {
+    background-color: #3A9AD9;
+}
+
+.btn-danger {
+    background-color: #EB7260;
+}
+
+.navigation {
+    background: #EB7260;
+    margin-left: auto;
+    margin-right: auto;
+    list-style: none;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+}
+
+.navigation a {
+
+    text-transform: uppercase;
+    text-decoration: none;
+    display: block;
+    padding: 1.2em;
+    color: white;
+    font-weight: bold;
+
+}
+
+.navigation li:last-child {
+    margin-left: auto;
+}
+
+.navigation a:hover {
+    background: white;
+    color: #EB7260;
+}
+
+h1 {
+    font-weight: bold;
+}

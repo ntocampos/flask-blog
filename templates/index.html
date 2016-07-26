@@ -1,33 +1,42 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Flask Blog - Home</title>
-    </head>
-    <body>
-        <h1>Homepage</h1>
-        <div>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Blog</title>
+
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <ul class="navigation">
+            <li><a href="/">Home</a></li>
             {% if g.current_user %}
-            <p>
-                Your username appears to be: <strong>{{ g.current_user.username }}</strong>
-                <a href="/logout">Log out</a>
-            </p>
-            <p>Session ID: <strong>{{ session.get('session_id') }}</strong></p>
+            <li><a href="/post/new">Create Post</a></li>
+            <li><a href="/logout">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
             {% else %}
-            <a href="/login">Log in</a>
+            <li><a href="/register">Sign Up</a></li>
+            <li><a href="/login">Sign In <span class="glyphicon glyphicon-log-in"></span></a></li>
             {% endif %}
-        </div>
-        <div>
-            {% for post in posts %}
-            <h3>
-                <a href="/post/{{ post.id }}">{{ post.title }}</a>
-            </h3>
-            <p>{{ (post.body[:100] + '...') if post.body[100:] else post.body }}</p>
-            <small>
+        </ul>
+    </div>
+    <div class="container">
+        {% for post in posts %}
+        <div class="post">
+            <h1><a href="/post/{{post.id}}">{{ post.title }}</a></h1>
+            <br><br>
+            <h3 class="text-justify">{{ post.body }}</h3>
+            <p>
                 posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
                 by {{ post.user.username }}
-            </small>
-            {% endfor %}
+            </p>
         </div>
+        {% endfor %}
+    </div>
     </body>
 </html>
