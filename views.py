@@ -209,3 +209,13 @@ def register():
             return redirect(url_for('register'))
     else:
         return render_template('register.html')
+
+@app.route('/user/<int:userid>')
+def userListing(userid):
+    _user = User.query.filter_by(id = userid).first()
+    if not _user:
+        return 404
+
+    print(_user.posts)
+
+    return render_template('user.html', user=_user)

@@ -39,7 +39,7 @@
             <br><br>
             <p>
                 posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
-                by {{ post.user.username }}
+                by <a href="/user/{{post.user.id}}">{{ post.user.username }}</a>
             </p>
         </div>
         {% endfor %}

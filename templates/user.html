@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flask Blog - '{{ post.title }}''</title>
+    <title>Flask Blog - {{user.username}}'s page</title>
 
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -27,26 +27,27 @@
     </div>
     <div class="container">
         <div class="post">
-            <div class="row">
-                <h1>{{ post.title }}</h1>
-                <br><br>
-                <h3 class="text-justify">{{ post.body }}</h3>
-                <p>
-                    posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
-                    by <a href="/user/{{post.user.id}}">{{ post.user.username }}</a>
-                </p>
-
-                {% if g.current_user == post.user %}
-                <div class="col-sm-3 col-sm-offset-9">
-                    <a class="btn btn-primary btn-lg btn-block" href="/post/{{post.id}}/edit">Edit</a>
-                    <a class="btn btn-danger btn-lg btn-block" href="/post/{{ post.id }}/delete">Delete</a>
-                </div>
-                {% endif %}
-            </div>
+            <h2>Showing <b>{{user.username}}'s</b> posts: </h2>
+            <h4>Click in the title for the complete post...</h4>
         </div>
+        {% for post in user.posts.order_by('created_at DESC') %}
+        <div class="post">
+            <h1><a href="/post/{{post.id}}">{{ post.title }}</a></h1>
+            <br><br>
+            {% if post.body[100:] %}
+            <h3 class="text-justify">{{ post.body[:100] + '...' }}</h3>
+            <a class="btn btn-default" href="/post/{{post.id}}">Read more</a>
+            {% else %}
+            <h3 class="text-justify">{{ post.body }}</h3>
+            {% endif %}
+            <br><br>
+            <p>
+                posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
+                by <a href="/user/{{user.id}}">{{ post.user.username }}</a>
+            </p>
+        </div>
+        {% endfor %}
     </div>
-
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
