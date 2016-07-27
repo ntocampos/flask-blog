@@ -108,6 +108,13 @@ def new_post():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
+
+        title = title if len(title) <= 50 else title[:50]
+        body = body if len(body) <= 1000 else body[:1000]
+
+        print('#######' + title + '#######')
+        print('#######' + title[:50] + '#######')
+
         if title and body:
             _user = g.current_user
             _post = Post(title, body)
@@ -137,12 +144,18 @@ def edit_post(id):
     _post = Post.query.get(id)
     if g.current_user == _post.user:
         if request.method == 'POST':
-            new_title = request.form['title']
-            new_body = request.form['body']
+            title = request.form['title']
+            body = request.form['body']
 
-            if new_title and new_body:
-                _post.title = new_title
-                _post.body = new_body
+            title = title if len(title) <= 50 else title[:50]
+            body = body if len(body) <= 1000 else body[:1000]
+
+            print('#######' + title + '#######')
+            print('#######' + title[:50] + '#######')
+
+            if title and body:
+                _post.title = title
+                _post.body = body
                 db.session.commit()
 
             return redirect(url_for('view_post', id = id))

@@ -1,28 +1,87 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Flask Blog - Create new post</title>
-    </head>
-    <body>
-        <div>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Blog</title>
+
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <ul class="navigation">
+            <li><a href="/">Home</a></li>
+            {% if g.current_user %}
+            <li><a href="/post/new">Create Post</a></li>
+            <li><a href="/logout">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
+            {% else %}
+            <li><a href="/register">Sign Up</a></li>
+            <li><a href="/login">Sign In <span class="glyphicon glyphicon-log-in"></span></a></li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="container">
+        <div class="post">
             {% if not post: %}
             <h1>Create new post</h1>
+            <br><br>
             <form method="post">
-                <input type="text" name="title" placeholder="Title">
-                <br />
-                <textarea name="body" rows="8" cols="40"></textarea>
-                <input type="submit" name="name" value="Post">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="title" placeholder="Title">
+                    <br />
+                    <textarea id="textarea" class="form-control" name="body" rows="8" cols="40" placeholder="Post content. Max: 1000 characters"></textarea>
+                    <br>
+                    <p id="counter" class="col-sm-9"></p>
+                    <input id="submit" class="btn btn-primary col-sm-3 col-sm-offset-9" type="submit" name="name" value="Post">
+                </div>
             </form>
             {% else %}
             <h1>Edit post</h1>
+            <br><br>
             <form method="post">
-                <input type="text" name="title" placeholder="Title" value="{{ post.title }}">
-                <br />
-                <textarea name="body" rows="8" cols="40">{{ post.body }}</textarea>
-                <input type="submit" name="name" value="Edit">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="title" placeholder="Title" value="{{ post.title }}">
+                    <br />
+                    <textarea id="textarea" class="form-control" name="body" rows="8" cols="40">{{ post.body }}</textarea>
+                    <br>
+                    <p id="counter" class="col-sm-9 bold"></p>
+                    <input id="submit" class="btn btn-primary col-sm-3" type="submit" name="name" value="Edit">
+                </div>
             </form>
             {% endif %}
         </div>
-    </body>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+    <script type="text/javascript">
+    function updateCounterText() {
+        var l = 1000 - $('#textarea').val().length;
+        console.log(l);
+        var counter_text = l + ' characters remaining';
+
+        $('#counter').text(counter_text);
+    };
+
+    $(document).on('ready', function() {
+        updateCounterText();
+    });
+
+    $('#textarea').bind('input propertychange', function() {
+        updateCounterText();
+        if(this.value.length && this.value.length <= 1000)
+            $("#submit").prop('disabled', false);
+        else
+            $('#submit').prop('disabled', true);
+    });
+    </script>
+</body>
 </html>
