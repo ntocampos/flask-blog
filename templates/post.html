@@ -27,17 +27,22 @@
     </div>
     <div class="container">
         <div class="post">
-            <h1>{{ post.title }}</h1>
-            <br><br>
-            <h3 class="text-justify">{{ post.body }}</h3>
-            <p>
-                posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
-                by {{ post.user.username }}
-            </p>
-            {% if g.current_user == post.user %}
-            <a class="btn btn-primary btn-lg" href="/post/{{post.id}}/edit">Edit</a>
-            <a class="btn btn-danger btn-lg" href="/post/{{ post.id }}/delete">Delete</a>
-            {% endif %}
+            <div class="row">
+                <h1>{{ post.title }}</h1>
+                <br><br>
+                <h3 class="text-justify">{{ post.body }}</h3>
+                <p>
+                    posted @ {{ post.created_at.strftime('%m/%d/%Y %H:%M') }} <br />
+                    by {{ post.user.username }}
+                </p>
+
+                {% if g.current_user == post.user %}
+                <div class="col-sm-3 col-sm-offset-9">
+                    <a class="btn btn-primary btn-lg btn-block" href="/post/{{post.id}}/edit">Edit</a>
+                    <a class="btn btn-danger btn-lg btn-block" href="/post/{{ post.id }}/delete">Delete</a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
