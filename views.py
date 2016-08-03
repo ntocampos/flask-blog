@@ -41,7 +41,7 @@ def before():
 
 ### Auxiliar functions ###
 
-def authenticate(username, password, remember):
+def authenticate(username, password, remember = False):
     _user = User.query.filter_by(username = username).first()
 
     if _user and _user.password == password:
@@ -234,7 +234,7 @@ def register():
             _user = User(email, username, password)
             db.session.add(_user)
             db.session.commit()
-            authenticate(username, password)
+            authenticate(username, password, True)
 
             return redirect(url_for('index'))
         else:
