@@ -24,6 +24,7 @@
             <li><a href="/login">Sign In <span class="glyphicon glyphicon-log-in"></span></a></li>
             {% endif %}
         </ul>
+
     </div>
     <div class="container">
         {% for post in posts %}
@@ -31,10 +32,10 @@
             <h1><a href="/post/{{post.id}}">{{ post.title }}</a></h1>
             <br><br>
             {% if post.body[100:] %}
-            <h3 class="text-justify">{{ post.body[:100] + '...' }}</h3>
+            <p class="lead text-justify">{{ post.body[:100] + '...' }}</p>
             <a class="btn btn-default" href="/post/{{post.id}}">Read more</a>
             {% else %}
-            <h3 class="text-justify">{{ post.body }}</h3>
+            <p class="lead text-justify">{{ post.body }}</p>
             {% endif %}
             <br><br>
             <p>

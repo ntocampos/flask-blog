@@ -12,12 +12,15 @@ Red: #EB7260*/
 body {
     background: #354458;
     color: #354458;
+    padding-top: 75px;
 }
 
 .post {
     background-color: white;
     padding: 20px 50px 50px 50px;
     margin: 15px 0 25px 0;
+    box-shadow: 0 0 20px 1px #333;
+    
 }
 
 h1 > a {
@@ -34,9 +37,17 @@ h1 > a {
 
 .navigation {
     background: #EB7260;
+    list-style: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: inherit;
+
     margin-left: auto;
     margin-right: auto;
-    list-style: none;
+
+    box-shadow: 0 0 20px 1px #333;
 
     display: flex;
     flex-flow: row wrap;
