@@ -6,6 +6,7 @@ from datetime import datetime
 from time import mktime
 from functools import wraps
 import re
+import simplejson as json
 
 ### Wrappers ###
 
@@ -92,6 +93,37 @@ def login():
             return render_template('login.html')
     else:
         return render_template('login.html')
+
+@app.route('/check_user', methods = ['POST'])
+def check_username():
+    username = request.form.get('username')
+    if username:
+        _user = User.query.filter_by(username=username).first()
+        print(_user)
+        if not _user:
+            return json.dumps({ 'user_exists': False })
+        else:
+            return json.dumps({ 'user_exists': True })
+
+    return json.dumps({})
+
+@app.route('/check_email', methods = ['POST'])
+def check_email():
+    email = request.form.get('email')
+
+    prog = re.compile(r'([a-z A-Z 0-9 . _ + -])+\@([a-z A-Z 0-9 - .])+\.([a-z])+')
+
+    if email:
+        _user = User.query.filter_by(email=email).first()
+        print(_user)
+
+        if _user or not prog.match(email):
+            return json.dumps({ 'email_exists': True })
+        else:
+            return json.dumps({ 'email_exists': False })
+
+    return json.dumps({})
+
 
 # Clear the session values
 @app.route('/logout')

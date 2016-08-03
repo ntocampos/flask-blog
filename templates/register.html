@@ -19,32 +19,40 @@
                 <h1 class="text-center">Sign Up</h1>
                 <br />
                 <form class="form-horizontal" method="post">
-                    <div class="form-group">
+                    <div id="email-group" class="form-group">
                         <label for="email" class="col-sm-3 control-label">Email</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="email" placeholder="email@example.com">
+                            <input id="email" type="text" class="form-control" name="email" placeholder="email@example.com">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div id="username-group" class="form-group">
                         <label for="username" class="col-sm-3 control-label">Username</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="username" placeholder="Username">
+                            <input id="username" type="text" class="form-control" name="username" placeholder="Username">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div id="password-group" class="form-group">
                         <label for="password" class="col-sm-3 control-label">Password</label>
                         <div class="col-sm-8">
-                            <input type="password" class="form-control" name="password" placeholder="More than 4 characters long">
+                            <input id="password" type="password" class="form-control" name="password" placeholder="More than 4 characters long">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div id="confirm-group" class="form-group">
                         <label for="confirm_password" class="col-sm-3 control-label">Confirm password</label>
                         <div class="col-sm-8">
-                            <input type="password" class="form-control" name="confirm_password" placeholder="Type the exact password typed above">
+                            <input id="confirm" type="password" class="form-control" name="confirm_password" placeholder="Type the exact password typed above">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                         </div>
                     </div>
                     <br />
-                    <input type="submit" class="btn btn-primary btn-lg col-sm-offset-7 col-sm-4" name="submit" value="Register">
+                    <input id="submit-button" type="submit" class="btn btn-primary btn-lg col-sm-offset-7 col-sm-4 disabled" name="submit" value="Register">
                 </form>
             </div>
         </div>
@@ -54,5 +62,116 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript">
+        function showError(selector) {
+            if (!$(selector).hasClass("has-feedback"))
+                $(selector).addClass("has-feedback");
+
+            $(selector).removeClass("has-success");
+            $(selector).addClass("has-error");
+            $(selector).find('span.glyphicon-remove').show();
+            $(selector).find('span.glyphicon-ok').hide();
+        }
+
+        function showSuccess(selector) {
+            if (!$(selector).hasClass("has-feedback"))
+                $(selector).addClass("has-feedback");
+
+            $(selector).removeClass("has-error");
+            $(selector).addClass("has-success");
+            $(selector).find('span.glyphicon-remove').hide()
+            $(selector).find('span.glyphicon-ok').show();
+        }
+
+        function clearFeedback(selector) {
+            $(selector).removeClass("has-feedback");
+            $(selector).removeClass("has-error");
+            $(selector).removeClass("has-success");
+            $(selector).find('span.glyphicon-remove').hide()
+            $(selector).find('span.glyphicon-ok').hide();
+        }
+
+        function isFormValid() {
+            var visibles = $('span.glyphicon-ok:visible');
+            if (visibles.length < 4)
+                return false
+            else
+                return true;
+        }
+
+    // Checks if the given email isn't already in use
+        $('#email').focusout(function () {
+            var selector = '#email-group';
+            var input_email = this.value;
+
+            if (input_email != "") {
+                $.post("/check_email", { email: input_email }, function(data) {
+                    data = JSON.parse(data);
+                    if (data.email_exists)
+                        showError(selector);
+                    else
+                        showSuccess(selector);
+                });
+            }
+            else {
+                clearFeedback(selector);
+            }
+        });
+
+        // Checks if the given username isn't already in use
+        $('#username').focusout(function () {
+            var selector = '#username-group';
+            var input_username = this.value;
+
+            if (input_username != "") {
+                $.post("/check_user", { username: input_username }, function(data) {
+                    data = JSON.parse(data);
+                    if (data.user_exists)
+                        showError(selector);
+                    else
+                        showSuccess(selector);
+                });
+            }
+        });
+
+        // Checks if the given password fills the requirements
+        $('#password').on('input propertychange', function() {
+            var selector = '#password-group';
+            var password = $('#password').val();
+
+            if (password.length < 4)
+                showError(selector);
+            else
+                showSuccess(selector);
+        });
+
+        // Compares the password and confirmation password
+        $('#password, #confirm').on('input propertychange', function() {
+            var selector = '#confirm-group';
+            var confirm = $('#confirm').val();
+            var password = $('#password').val();
+
+            if (confirm != '')
+                if (password == confirm)
+                    showSuccess(selector);
+                else
+                    showError(selector);
+        });
+
+        $('#email, #username, #password, #confirm').on('input propertychange', function() {
+            if (isFormValid())
+                $('#submit-button').removeClass('disabled');
+            else
+                $('#submit-button').addClass('disabled');
+        });
+
+        // Lastly, checks if there is any error before submit
+        $('.form-horizontal').submit(function() {
+            if (!isFormValid()) {
+                alert('Please fill all fields')
+                return false
+            }
+        });
+    </script>
 </body>
 </html>
