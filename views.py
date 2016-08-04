@@ -231,7 +231,9 @@ def register():
             print 'password error'
 
         if valid:
-            _user = User(email, username, password)
+            hashed_pass = sha1(password).hexdigest()
+
+            _user = User(email, username, hashed_pass)
             db.session.add(_user)
             db.session.commit()
             authenticate(username, password, True)
