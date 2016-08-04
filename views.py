@@ -43,8 +43,9 @@ def before():
 
 def authenticate(username, password, remember = False):
     _user = User.query.filter_by(username = username).first()
+    hashed_pass = sha1(password).hexdigest()
 
-    if _user and _user.password == password:
+    if _user and _user.password == hashed_pass:
         hash_key = username + app.secret_key + str(int(mktime(datetime.now().timetuple())))
         session_id = sha1(hash_key.encode()).hexdigest()
 
