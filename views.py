@@ -8,6 +8,7 @@ from functools import wraps
 import re
 import simplejson as json
 
+
 ### Wrappers ###
 
 # This decorator will prevent that users don't access certain pages that need
@@ -20,7 +21,7 @@ def login_required(f):
             # to prevent fake session keys
             user_id = session.get('user_id')
             session_id = session.get('session_id')
-            _session = Session.query.filter_by(user_id = user_id, key = session_id)
+            _session = Session.query.filter_by(user_id=user_id, key=session_id)
 
             if _session:
                 return f(*args, **kwargs)
@@ -29,20 +30,21 @@ def login_required(f):
 
     return decorated_function
 
+
 # Puts the session_id corresponding user object in the g variable, to be accessible
 # through the entire request
 @app.before_request
 def before():
     if session.get('is_authenticated', False):
         print 'autenticated: ' + str(session.get('is_authenticated'))
-        _s = Session.query.filter_by(key = session.get('session_id')).first()
+        _s = Session.query.filter_by(key=session.get('session_id')).first()
         g.current_user = _s.user
 
 
 ### Auxiliar functions ###
 
-def authenticate(username, password, remember = False):
-    _user = User.query.filter_by(username = username).first()
+def authenticate(username, password, remember=False):
+    _user = User.query.filter_by(username=username).first()
     hashed_pass = sha1(password).hexdigest()
 
     if _user and _user.password == hashed_pass:
@@ -70,11 +72,11 @@ def authenticate(username, password, remember = False):
 @app.route('/')
 def index():
     _posts = Post.query.order_by('created_at DESC').all()
-    return render_template('index.html', posts = _posts)
+    return render_template('index.html', posts=_posts)
 
 
 # GET: displays the login form; POST: authenticate
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if session.get('is_authenticated'):
         return redirect(url_for('index'))
@@ -95,20 +97,22 @@ def login():
     else:
         return render_template('login.html')
 
-@app.route('/check_user', methods = ['POST'])
+
+@app.route('/check_user', methods=['POST'])
 def check_username():
     username = request.form.get('username')
     if username:
         _user = User.query.filter_by(username=username).first()
         print(_user)
         if not _user:
-            return json.dumps({ 'user_exists': False })
+            return json.dumps({'user_exists': False})
         else:
-            return json.dumps({ 'user_exists': True })
+            return json.dumps({'user_exists': True})
 
     return json.dumps({})
 
-@app.route('/check_email', methods = ['POST'])
+
+@app.route('/check_email', methods=['POST'])
 def check_email():
     email = request.form.get('email')
 
@@ -119,9 +123,9 @@ def check_email():
         print(_user)
 
         if _user or not prog.match(email):
-            return json.dumps({ 'email_exists': True })
+            return json.dumps({'email_exists': True})
         else:
-            return json.dumps({ 'email_exists': False })
+            return json.dumps({'email_exists': False})
 
     return json.dumps({})
 
@@ -133,9 +137,10 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+
 # GET: displays the new post form; POST: creates a new post
-@app.route('/post', methods = ['GET', 'POST'])
-@app.route('/post/new', methods = ['GET', 'POST'])
+@app.route('/post', methods=['GET', 'POST'])
+@app.route('/post/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
     if request.method == 'POST':
@@ -161,17 +166,19 @@ def new_post():
     else:
         return render_template('new_post.html')
 
+
 # View a specific post
 @app.route('/post/<int:id>')
 def view_post(id):
     _post = Post.query.get(id)
     if _post:
-        return render_template('post.html', post = _post)
+        return render_template('post.html', post=_post)
     else:
         return '404'
 
+
 # GET: display the form pre filled to edit a post; POST: edit the post
-@app.route('/post/<int:id>/edit', methods = ['GET', 'POST'])
+@app.route('/post/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_post(id):
     _post = Post.query.get(id)
@@ -191,11 +198,12 @@ def edit_post(id):
                 _post.body = body
                 db.session.commit()
 
-            return redirect(url_for('view_post', id = id))
+            return redirect(url_for('view_post', id=id))
         else:
-            return render_template('new_post.html', post = _post)
+            return render_template('new_post.html', post=_post)
     else:
-        return redirect(url_for('view_post', id = id))
+        return redirect(url_for('view_post', id=id))
+
 
 # Delete a specific post if the requestor is the owner
 @app.route('/post/<int:id>/delete')
@@ -208,8 +216,9 @@ def delete_post(id):
 
     return redirect(url_for('index'))
 
+
 # GET: displays the register form; POST: creates a new user in the db
-@app.route('/register', methods = ['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         email = request.form['email']
@@ -245,9 +254,10 @@ def register():
     else:
         return render_template('register.html')
 
+
 @app.route('/user/<int:userid>')
 def userListing(userid):
-    _user = User.query.filter_by(id = userid).first()
+    _user = User.query.filter_by(id=userid).first()
     if not _user:
         return 404
 

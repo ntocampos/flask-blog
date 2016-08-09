@@ -4,11 +4,12 @@ from datetime import datetime
 
 db = SQLAlchemy(app)
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     username = db.Column(db.String(20), unique=True)
-    password = db.Column(db.String(40)) # SHA1 encryption
+    password = db.Column(db.String(40))  # SHA1 encryption
 
     sessions = db.relationship('Session', backref='user', lazy='dynamic')
     posts = db.relationship('Post', backref='user', lazy='dynamic')
@@ -19,7 +20,8 @@ class User(db.Model):
         self.password = password
 
     def __repr__(self):
-        return '<User [{id}]: {username}>'.format(id = self.id, username = self.username)
+        return '<User [{id}]: {username}>'.format(id=self.id, username=self.username)
+
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,8 +31,9 @@ class Session(db.Model):
     def __init__(self, key):
         self.key = key
 
+
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50))
     body = db.Column(db.String(1000))
     created_at = db.Column(db.DateTime)
@@ -44,7 +47,8 @@ class Post(db.Model):
 
     def __repr__(self):
         truncated = (self.title[:10] + '...') if len(self.title) > 10 else self.title
-        return 'Post [{id}]: {title}'.format(id = self.id, title = truncated)
+        return 'Post [{id}]: {title}'.format(id=self.id, title=truncated)
+
 
 def rebuild_database():
     db.drop_all()

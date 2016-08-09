@@ -11,4 +11,4 @@ app.secret_key = 'f97a5a8134e5df4ad0707be5f4bcb7e308e77debb097d9bd'
 from views import *
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug=True)
